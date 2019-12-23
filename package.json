@@ -1,0 +1,25 @@
+{
+  "name": "tesseract.js-electron",
+  "version": "0.1.0",
+  "description": "an example to use tesseract.js in electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeromewu/tesseract.js-electron.git"
+  },
+  "author": "jeromewus@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jeromewu/tesseract.js-electron/issues"
+  },
+  "homepage": "https://github.com/jeromewu/tesseract.js-electron#readme",
+  "devDependencies": {
+    "electron": "^7.1.7"
+  },
+  "dependencies": {
+    "tesseract.js": "^2.0.1"
+  }
+}
