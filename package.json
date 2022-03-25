@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/jeromewu/tesseract.js-electron#readme",
   "devDependencies": {
-    "electron": "^7.1.7"
+    "electron": "^13.6.6"
   },
   "dependencies": {
     "tesseract.js": "^2.0.1"
