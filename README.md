@@ -3,16 +3,35 @@ Tesseract.js Electron
 
 An example to use tesseract.js in electron.
 
-Please check index.html for details.
+1. Loading image in `index.html` and passing the `path` to `main.js`.
 
-## Installation
+2. `main.js` recognize the image and returns the result.
 
+3. Then `index.html` displays the result.
+
+# run the example
 ```bash
+# install
 $ npm install
+
+# run
+$ npm run start
 ```
 
-## Run
-
+# init script (no need to run for example)
 ```bash
-$ npm start
+# There is no need for a specific version, just make a record.
+# Please try other versions by yourself.
+
+$ node --version
+# v16.16.0
+
+$ npm --version
+# 9.6.2
+
+# init project
+$ npm init -f
+
+# install
+$ npm install electron tesseract.js --save-dev
 ```
