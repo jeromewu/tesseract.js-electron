@@ -1,4 +1,25 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
+const { join } = require('path')
+const { createWorker } = require('tesseract.js')
+
+const recognize = async (event, path) => {
+  const worker = await createWorker({
+    cachePath: join(__dirname, '/lang-data'),
+    logger: (m) => console.log(JSON.stringify(m)),
+    errorHandler: (e) => console.log(JSON.stringify(e))
+  })
+  await worker.loadLanguage('eng')
+  await worker.initialize('eng')
+  const result = await worker.recognize(path)
+  await worker.terminate()
+  
+  console.log("image path:")
+  console.log(path)
+  console.log("recognize text:")
+  console.log(result?.data?.text)
+
+  return JSON.stringify(result)
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -10,6 +31,7 @@ function createWindow () {
     width: 800,
     height: 600,
     webPreferences: {
+      preload: join(__dirname, "./preload.js"),
       nodeIntegration: true
     }
   })
@@ -29,10 +51,17 @@ function createWindow () {
   })
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.whenReady().then(() => {
+  ipcMain.handle('recognize', recognize)
+
+  createWindow()
+
+  app.on("activate", function () {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -40,14 +69,6 @@ app.on('window-all-closed', () => {
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
     app.quit()
-  }
-})
-
-app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (win === null) {
-    createWindow()
   }
 })
 

@@ -7,23 +7,35 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
   </head>
   <body>
+    <img id="image" class="display: none" />
+    <input id="fileinput" accept="image/jpeg, image/png" type="file" />
+    <div id="recognize" style="white-space: pre-line"></div>
     <script>
-      const { createWorker } = require('tesseract.js');
-      const path = require('path');
+      const image = document.getElementById("image")
+      const fileinput = document.getElementById("fileinput")
+      const recognize = document.getElementById("recognize")
 
-      const worker = createWorker({
-        cachePath: path.join(__dirname, 'lang-data'),
-        logger: m => console.log(m),
-      });
+      const changeHandle = async (event) => {
+        const file = event.target?.files?.[0]
+        if (!file) return
+        const path = file.path
+        if (path) {
+          image.src = path
+          image.style.display = "block"
+          image.style.height = "200px"
+          image.style.border = "1px solid"
+        }
+        recognize.innerText = `file path:\n${path}\n\nresult:\nloading...`
+        const json = await window.electronAPI.recognize(path)
+        const result = JSON.parse(json)
 
-      (async () => {
-        await worker.load();
-        await worker.loadLanguage('eng');
-        await worker.initialize('eng');
-        const { data: { text } } = await worker.recognize(path.join(__dirname, 'images', 'testocr.png'));
-        console.log(text);
-        await worker.terminate();
-      })();
+        console.log("file path:")
+        console.log(path)
+        console.log("result:")
+        console.log(result?.data?.text)
+        recognize.innerText = `file path:\n${path}\n\nresult:\n${result?.data?.text}`
+      }
+      fileinput.addEventListener("change", changeHandle)
     </script>
   </body>
 </html>
